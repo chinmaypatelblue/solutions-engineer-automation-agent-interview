@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Operations Portal Prototype</title>
+
+  <!-- Static prototype for candidate take-home assignment. -->
+  <!-- Candidates may replace, refactor, or rebuild this UI in any stack. -->
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f3f8fd;
+      --panel: #ffffff;
+      --ink: #0e1c2b;
+      --muted: #5a6f89;
+      --border: #cfe0f2;
+      --blue: #2b9fe8;
+      --navy: #0f1d2b;
+      --soft-blue: #e8f5ff;
+      --green-bg: #dff7ef;
+      --green: #009b6b;
+      --orange-bg: #fff3d8;
+      --orange: #d88400;
+      --red-bg: #ffe8e8;
+      --red: #c93939;
+      --gray-bg: #edf3f9;
+      --gray: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 264px minmax(0, 1fr);
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    .sidebar {
+      background: var(--navy);
+      color: white;
+      padding: 24px 18px;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 34px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #2b9fe8, #76d0ff);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: #9fb3c8;
+      margin-top: 2px;
+    }
+
+    .nav-section {
+      font-size: 11px;
+      color: #7f96ad;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin: 24px 10px 10px;
+      font-weight: 800;
+    }
+
+    .side-link {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #c8d6e5;
+      border-radius: 10px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      margin: 2px 0;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .side-link i {
+      font-size: 16px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .side-link:hover,
+    .side-link.active {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-footer {
+      margin-top: 36px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.07);
+      color: #c8d6e5;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--bg);
+    }
+
+    .topbar {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      gap: 20px;
+    }
+
+    .search-pill {
+      width: min(420px, 50vw);
+      border: 1px solid var(--border);
+      background: #f8fbff;
+      border-radius: 999px;
+      padding: 10px 15px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .env-pill {
+      border: 1px solid var(--border);
+      background: #f8fbff;
+      color: #38536d;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: #34475d;
+      white-space: nowrap;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #e8f5ff;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      color: #1b75b4;
+    }
+
+    .content {
+      padding: 32px;
+      background: var(--bg);
+      min-height: calc(100vh - 72px);
+      overflow: hidden;
+    }
+
+    .page {
+      display: none;
+      background: var(--bg);
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .breadcrumb-separator {
+      color: #9badc0;
+    }
+
+    .breadcrumbs span:last-child {
+      color: var(--ink);
+    }
+
+    h1 {
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #40526a;
+      font-weight: 500;
+      max-width: 820px;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      border-color: var(--navy);
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 10px 16px;
+    }
+
+    .btn-primary:hover {
+      background: #182d42;
+      border-color: #182d42;
+    }
+
+    .btn-outline-secondary {
+      border-color: var(--border);
+      color: var(--navy);
+      background: white;
+      font-weight: 700;
+      border-radius: 9px;
+    }
+
+    .btn-outline-secondary:hover {
+      border-color: #b9cfe5;
+      background: #f7fbff;
+      color: var(--navy);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(15,29,43,.035);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      margin-top: 6px;
+      letter-spacing: -0.8px;
+    }
+
+    .database-card,
+    .intake-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15,29,43,.04);
+    }
+
+    .card-toolbar {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .toolbar-title {
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      color: #5f738c;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .toolbar-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #fbfdff;
+    }
+
+    .filters .form-control,
+    .filters .form-select {
+      border-color: var(--border);
+      height: 38px;
+      font-size: 13px;
+      border-radius: 9px;
+    }
+
+    .filters .form-control:focus,
+    .filters .form-select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 0.2rem rgba(43, 159, 232, 0.12);
+    }
+
+    .count {
+      margin-left: auto;
+      color: #5f738c;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      font-size: 13px;
+      margin: 0 !important;
+      min-width: 1040px;
+    }
+
+    thead th {
+      padding: 13px 18px !important;
+      color: #59708a;
+      background: #fbfdff;
+      border-bottom: 1px solid var(--border) !important;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #dbe8f5;
+    }
+
+    tbody tr:last-child {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #f8fbff;
+    }
+
+    td {
+      padding: 14px 18px !important;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .client-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      min-width: 250px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #f0f7ff;
+      display: grid;
+      place-items: center;
+      color: #19324d;
+      font-size: 10px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .client-id {
+      color: #58708a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-soft {
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .real { background: var(--soft-blue); color: var(--blue); }
+    .delayed { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--border); }
+    .active { background: var(--green-bg); color: var(--green); }
+    .pending { background: var(--orange-bg); color: var(--orange); }
+    .inactive { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--border); }
+    .review { background: var(--red-bg); color: var(--red); }
+
+    .money,
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .small-muted {
+      color: #6d829b;
+      font-size: 11px;
+    }
+
+    .stepper {
+      display: flex;
+      gap: 42px;
+      align-items: center;
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 800;
+      color: #334155;
+      background: #fbfdff;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      width: 76px;
+      height: 1px;
+      background: var(--border);
+      position: absolute;
+      left: 95px;
+      top: 50%;
+    }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      background: white;
+      color: #61809f;
+      font-size: 12px;
+    }
+
+    .step.active .step-circle {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+    }
+
+    .intake-body {
+      padding: 28px;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--blue);
+      background: #e9f6ff;
+      min-height: 260px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      margin-bottom: 28px;
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+
+    .upload-zone:hover {
+      background: #e4f3ff;
+      border-color: #168ed8;
+    }
+
+    .upload-icon {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--blue);
+      font-size: 28px;
+      margin: 0 auto 18px;
+      box-shadow: 0 8px 20px rgba(43,159,232,0.12);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #657b95;
+      font-size: 11px;
+      text-transform: uppercase;
+      margin: 24px 0;
+      font-weight: 800;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .action-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 104px;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15,29,43,.06);
+    }
+
+    .action-title {
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .action-card p {
+      color: #536781;
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .mini-panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .mini-panel-title {
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .route-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .route-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #f8fbff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #425871;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1100px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+
+      .search-pill {
+        width: auto;
+        flex: 1;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .filters {
+        flex-wrap: wrap;
+      }
+
+      .count {
+        margin-left: 0;
+      }
+
+      .stepper {
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 29px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-actions .env-pill {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CO</div>
+        <div>
+          <div class="brand-title">Client Ops</div>
+          <div class="brand-subtitle">Sales Operations Portal</div>
+        </div>
+      </div>
+
+      <div class="nav-section">Workspace</div>
+      <button class="side-link active" id="navDatabase" type="button" onclick="showPage('databasePage')">
+        <i class="bi bi-building"></i>
+        <span>Client Database</span>
+      </button>
+      <button class="side-link" id="navIntake" type="button" onclick="showPage('intakePage')">
+        <i class="bi bi-cloud-arrow-up"></i>
+        <span>Agreement Intake</span>
+      </button>
+
+      <div class="nav-section">Operations</div>
+      <button class="side-link" type="button">
+        <i class="bi bi-graph-up"></i>
+        <span>Billing Reports</span>
+      </button>
+      <button class="side-link" type="button">
+        <i class="bi bi-clock-history"></i>
+        <span>Change Log</span>
+      </button>
+      <button class="side-link" type="button">
+        <i class="bi bi-shield-check"></i>
+        <span>Approvals</span>
+      </button>
+      <button class="side-link" type="button">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      </button>
+
+      <div class="sidebar-footer">
+        <strong>Prototype note</strong><br>
+        This file is static. Build a functional app, plus a Sales request workflow with UAT and production promotion.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search-pill">
+          <i class="bi bi-search"></i>
+          <span>Search clients, agreements, reports...</span>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="env-pill">Prototype</div>
+          <div class="user-pill">
+            <div class="user-avatar"><i class="bi bi-person"></i></div>
+            <span>Sales Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <section id="databasePage" class="page active">
+          <div class="breadcrumbs" aria-label="Breadcrumb">
+            <span>Home</span>
+            <span class="breadcrumb-separator">/</span>
+            <span>Workspace</span>
+            <span class="breadcrumb-separator">/</span>
+            <span>Client Database</span>
+          </div>
+
+          <div class="page-header">
+            <div>
+              <h1>Client Database</h1>
+              <p class="subtitle">
+                Every subscriber, every feed, every agreement - filterable in seconds. Built for questions like
+                "show me all real-time subscribers in APAC" before a policy or fee change goes out.
+              </p>
+            </div>
+
+            <div class="header-actions">
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="bi bi-sliders me-2"></i>Manage Views
+              </button>
+              <button class="btn btn-primary" type="button" onclick="showPage('intakePage')">
+                <i class="bi bi-plus-lg me-2"></i>Intake New Customer
+              </button>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Clients</div>
+              <div class="stat-value">10</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active</div>
+              <div class="stat-value">8</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Pending Review</div>
+              <div class="stat-value">1</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Monthly ARR</div>
+              <div class="stat-value">$120k</div>
+            </div>
+          </div>
+
+          <div class="database-card">
+            <div class="card-toolbar">
+              <div>
+                <div class="toolbar-title">Client Registry</div>
+                <div class="toolbar-subtitle">Synthetic client, agreement, billing, and feed data.</div>
+              </div>
+              <div class="d-flex gap-2 flex-wrap justify-content-end">
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="bi bi-download me-2"></i>Export XLSX
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" type="button">
+                  <i class="bi bi-file-earmark me-2"></i>Export PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="filters">
+              <input class="form-control" style="max-width: 230px;" placeholder="Search client, contact, ID..." />
+              <select class="form-select" style="max-width: 155px;">
+                <option>All Countries</option>
+                <option>United Kingdom</option>
+                <option>United States</option>
+                <option>Singapore</option>
+                <option>Hong Kong</option>
+                <option>Canada</option>
+              </select>
+              <select class="form-select" style="max-width: 155px;">
+                <option>All Providers</option>
+                <option>Direct Feed</option>
+                <option>Market Data Provider A</option>
+                <option>Market Data Provider B</option>
+              </select>
+              <select class="form-select" style="max-width: 135px;">
+                <option>All Feeds</option>
+                <option>Real-time</option>
+                <option>Delayed</option>
+              </select>
+              <select class="form-select" style="max-width: 135px;">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Pending</option>
+                <option>Inactive</option>
+              </select>
+              <div class="count">10 of 10 clients</div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="table table-borderless align-middle">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Country</th>
+                    <th>Provider</th>
+                    <th>Feed</th>
+                    <th>Status</th>
+                    <th>Renewal</th>
+                    <th>Users</th>
+                    <th>ARR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">NA</div><div>Northstar Analytics Ltd<br><span class="client-id">CLT-1001</span></div></div></td>
+                    <td>United Kingdom</td>
+                    <td>Market Data Provider A</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft pending">Pending</span></td>
+                    <td class="mono">2025-01-10</td>
+                    <td class="mono">84 <span class="small-muted">($672)</span></td>
+                    <td class="money">$14,400</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">SR</div><div>Summit Ridge Capital<br><span class="client-id">CLT-1002</span></div></div></td>
+                    <td>United States</td>
+                    <td>Direct Feed</td>
+                    <td><span class="badge-soft delayed">Delayed</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-02-14</td>
+                    <td class="mono">42 <span class="small-muted">($336)</span></td>
+                    <td class="money">$7,200</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">MR</div><div>Meridian Research Pte Ltd<br><span class="client-id">CLT-1003</span></div></div></td>
+                    <td>Singapore</td>
+                    <td>Market Data Provider B</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-03-01</td>
+                    <td class="mono">116 <span class="small-muted">($928)</span></td>
+                    <td class="money">$22,800</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">AV</div><div>Atlas Ventures APAC<br><span class="client-id">CLT-1004</span></div></div></td>
+                    <td>Hong Kong</td>
+                    <td>Direct Feed</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-04-22</td>
+                    <td class="mono">63 <span class="small-muted">($504)</span></td>
+                    <td class="money">$10,800</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">HM</div><div>HarborPoint Markets<br><span class="client-id">CLT-1005</span></div></div></td>
+                    <td>Hong Kong</td>
+                    <td>Direct Feed</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-05-16</td>
+                    <td class="mono">98 <span class="small-muted">($784)</span></td>
+                    <td class="money">$19,200</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">CG</div><div>Cedar Grove Capital<br><span class="client-id">CLT-1006</span></div></div></td>
+                    <td>United Kingdom</td>
+                    <td>Direct Feed</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-06-09</td>
+                    <td class="mono">75 <span class="small-muted">($600)</span></td>
+                    <td class="money">$13,500</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">LS</div><div>Lighthouse Securities SG<br><span class="client-id">CLT-1007</span></div></div></td>
+                    <td>Singapore</td>
+                    <td>Market Data Provider A</td>
+                    <td><span class="badge-soft delayed">Delayed</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-07-18</td>
+                    <td class="mono">51 <span class="small-muted">($408)</span></td>
+                    <td class="money">$8,700</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">BA</div><div>Banyan Advisory Group<br><span class="client-id">CLT-1008</span></div></div></td>
+                    <td>Thailand</td>
+                    <td>Market Data Provider D</td>
+                    <td><span class="badge-soft delayed">Delayed</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-08-11</td>
+                    <td class="mono">37 <span class="small-muted">($296)</span></td>
+                    <td class="money">$6,900</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">GP</div><div>Granite Peak Partners<br><span class="client-id">CLT-1009</span></div></div></td>
+                    <td>Switzerland</td>
+                    <td>Market Data Provider C</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft inactive">Inactive</span></td>
+                    <td class="mono">2025-09-04</td>
+                    <td class="mono">-</td>
+                    <td class="money">-</td>
+                  </tr>
+                  <tr>
+                    <td><div class="client-cell"><div class="avatar">OF</div><div>Oakwood Financial Ltd<br><span class="client-id">CLT-1010</span></div></div></td>
+                    <td>Canada</td>
+                    <td>Direct Feed</td>
+                    <td><span class="badge-soft real">Real-time</span></td>
+                    <td><span class="badge-soft active">Active</span></td>
+                    <td class="mono">2025-10-29</td>
+                    <td class="mono">69 <span class="small-muted">($552)</span></td>
+                    <td class="money">$12,600</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="intakePage" class="page">
+          <div class="breadcrumbs" aria-label="Breadcrumb">
+            <span>Home</span>
+            <span class="breadcrumb-separator">/</span>
+            <span>Workspace</span>
+            <span class="breadcrumb-separator">/</span>
+            <span>Agreement Intake</span>
+          </div>
+
+          <div class="page-header">
+            <div>
+              <h1>Agreement Intake</h1>
+              <p class="subtitle">
+                Drop a signed Client Service Agreement. AI extracts every field, you review, then it routes to CRM,
+                billing, and the client database simultaneously. No more triple-keying.
+              </p>
+            </div>
+
+            <div class="header-actions">
+              <button class="btn btn-outline-secondary" type="button" onclick="showPage('databasePage')">
+                <i class="bi bi-arrow-left me-2"></i>Back to Database
+              </button>
+            </div>
+          </div>
+
+          <div class="intake-card">
+            <div class="stepper">
+              <div class="step active"><div class="step-circle">1</div><span>Upload</span></div>
+              <div class="step"><div class="step-circle">2</div><span>Review &amp; Confirm</span></div>
+              <div class="step"><div class="step-circle">3</div><span>Route to Systems</span></div>
+            </div>
+
+            <div class="intake-body">
+              <div class="upload-zone">
+                <div>
+                  <div class="upload-icon"><i class="bi bi-upload"></i></div>
+                  <strong>Drop a signed Client Service Agreement here</strong>
+                  <div class="small-muted mt-2">PDF - DocuSign - DOCX - or click to browse</div>
+                </div>
+              </div>
+
+              <div class="divider">or</div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="action-card">
+                    <div class="action-title"><i class="bi bi-pencil"></i>Manual entry</div>
+                    <p>Type agreement fields directly. Use when no document is available or to overwrite AI extraction.</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="action-card">
+                    <div class="action-title"><i class="bi bi-file-earmark-spreadsheet"></i>CSV bulk import</div>
+                    <p>Upload many agreements at once via a standard template for migrations or backlog catch-up.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-grid">
+                <div class="mini-panel">
+                  <div class="mini-panel-title"><i class="bi bi-stars text-primary"></i>Expected extraction fields</div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label small-muted">Client legal name</label>
+                      <input class="form-control" value="" placeholder="Extracted from agreement" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small-muted">Country</label>
+                      <input class="form-control" value="" placeholder="Extracted from agreement" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small-muted">Feed type</label>
+                      <select class="form-select">
+                        <option>Real-time</option>
+                        <option>Delayed</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small-muted">Account owner</label>
+                      <input class="form-control" value="" placeholder="Sales owner" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mini-panel">
+                  <div class="mini-panel-title"><i class="bi bi-diagram-3 text-primary"></i>Routing targets</div>
+                  <ul class="route-list">
+                    <li><span>CRM account</span><span class="badge-soft pending">Queued</span></li>
+                    <li><span>Billing profile</span><span class="badge-soft pending">Queued</span></li>
+                    <li><span>Client registry</span><span class="badge-soft pending">Queued</span></li>
+                    <li><span>Welcome task</span><span class="badge-soft pending">Queued</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(function(page) {
+        page.classList.remove('active');
+      });
+
+      var page = document.getElementById(pageId);
+      if (page) {
+        page.classList.add('active');
+      }
+
+      document.querySelectorAll('.side-link').forEach(function(link) {
+        link.classList.remove('active');
+      });
+
+      if (pageId === 'databasePage') {
+        document.getElementById('navDatabase').classList.add('active');
+      }
+
+      if (pageId === 'intakePage') {
+        document.getElementById('navIntake').classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
